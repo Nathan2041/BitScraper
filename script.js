@@ -269,10 +269,9 @@ function updatePlayer(playerPosition, viewRadius, previousPlayerInput, playerFun
   let isInAir = false;
   let appliedPlayerFunction = JSON.parse(playerFunction);
   let response = appliedPlayerFunction(visibleScene, cachedData);
-  let canApplyResponse = true;
 
-  let centerX = Math.floor(visibleScene.length / 2);
-  let centerY = Math.floor(visibleScene[0].length / 2);
+  /*
+  let playerPosition = [centerY, centerX];
 
   const cellAbove = centerY > 0 ? visibleScene[centerY - 1][centerX] : 'b';
 	const cellRight = centerX < visibleScene[0].length - 1 ? visibleScene[centerY][centerX + 1] : 'b';
@@ -284,40 +283,7 @@ function updatePlayer(playerPosition, viewRadius, previousPlayerInput, playerFun
   const cellBottomLeft = (centerY < visibleScene.length - 1 && centerX > 0) ? visibleScene[centerY + 1][centerX - 1] : 'b';
   const cellBottomRight = (centerY < visibleScene.length - 1 && centerX < visibleScene[0].length - 1) ?  visibleScene[centerY + 1][centerX + 1] : 'b';
 
-  for (let i = 0; i < (viewRadius * 2 + 1); i++) { // probably inneficient but who cares
-    let cellBelow = centerY < visibleScene.length - i /*is this 1 or i?*/ ? visibleScene[centerY + i][centerX] : 'b'; // also might be wrong probably check
-    if (cellBelow == 'a') {
-      cellsBelow.push('a');
-    }
-    else {
-      break;
-    }
-  }
-
-  if (cellsBelow[0].length > 0) {
-    if (cellBottomLeft !== 'a' && response == 2) {isInAir = false} else {
-    if (cellBottomRight !== 'a' && response == 3) {isInAir = false} else {
-      scene[playerPosition[0]][playerPosition[1]] = 'a';
-      scene[playerPosition[0] + cellsBelow.length][playerPosition[1]] = 'p';
-      isInAir = true;
-      playerPosition = [playerPosition[0] + cellsBelow.length, playerPosition[1]];
-    }}
-  }
-
-  if (response.response == 1 && cellRight == 'a') {
-    scene[playerPosition[0]][playerPosition[1]] = 'a';
-    scene[playerPosition[0]][playerPosition[1] + 1] == 'p';
-    return ['complete', scene]
-  }
-
-  if (response.response == 0) {
-    if (isInAir == true) {return ['complete', scene]}
-    if (cellAbove == 'a') {
-      cellAbove = 'p';
-      //
-      //scene[]
-    } // incomplete
-  }
+  */
 
   return 'incomplete'
 }
