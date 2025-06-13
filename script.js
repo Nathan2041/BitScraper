@@ -265,7 +265,7 @@ window.innerWidth < 1070 ? data.innerHTML = `<span class='emoji'>⚠</span>scree
  * @param scene {string[][]}
  * @return scene {string[][]}
  */
-function updatePlayer(playerPosition, viewRadius, previousPlayerPosition, playerFunction, visibleScenePlayer, scene, cachedData) {
+function updatePlayer(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {
   let isInAir = false;
   let appliedPlayerFunction = JSON.parse(playerFunction);
   let response = appliedPlayerFunction(visibleScene, cachedData);
@@ -312,7 +312,11 @@ function updatePlayer(playerPosition, viewRadius, previousPlayerPosition, player
 
   if (response.response == 0) {
     if (isInAir == true) {return ['complete', scene]}
-    if (cellAbove == 'a') {} // incomplete
+    if (cellAbove == 'a') {
+      cellAbove = 'p';
+      //
+      //scene[]
+    } // incomplete
   }
 
   return 'incomplete'
