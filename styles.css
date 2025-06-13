@@ -1,0 +1,39 @@
+canvas {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.div1 {
+  display: flex;
+  justify-content: space-between;
+}
+
+#canvas1 {
+  border: 1px solid black;
+  background-color: red; /* red = bad image editor (me) */
+}
+
+#canvas2 {
+  border: 1px solid black;
+}
+
+input {
+  margin-bottom: 10px;
+}
+
+button {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.emoji {
+  font-family: 'Noto Color Emoji';
+}
+
+#data {
+  font-family: 'Arial';
+}
+
+html {
+  background: #191b1e
+}

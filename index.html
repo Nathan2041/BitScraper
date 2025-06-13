@@ -1,0 +1,72 @@
+<!-- https://docs.google.com/document/d/1g-cRd9DCQHr88_7mPg1rXYDL2ZNTFi6npmBoAB2qiWg/edit?tab=t.0 -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>BitScraper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/material.min.css">
+    <link rel='stylesheet' href = 'codeMirror.css' />
+
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <h1 id="data"></h1>
+    <button id="button">Enter Code</button>
+    <span id="errors"></span>
+    <!-- Only for debugging -->
+    <div class="div1">
+      <div class="editor-container">
+        <textarea id="code">
+/* Documentation: https://docs.google.com/document/d/e/2PACX-1vR8e6FYdXNZ-n5YcGWcq3FfF8eyt7ZicwZfKPJbRQizyPu334o23h5NAJ9mCC9IrTw22haWIQ0i6fa3/pub */
+function player(visibleScene, cachedData) {
+	// Your AI algorithm goes here
+	// visibleScene: 2D array of visible cells around player
+	// gravityDirection: 0=up, 1=right, 2=left
+	// cachedData: persistent data between turns
+				
+	// GRAVITY RULES:
+	// - Can only move UP if the cell below you is NOT air
+				
+	const centerY = Math.floor(visibleScene.length / 2);
+	const centerX = Math.floor(visibleScene[0].length / 2);
+				
+	// Check what's around us
+	const cellAbove = centerY > 0 ? visibleScene[centerY - 1][centerX] : 'b';
+	const cellRight = centerX < visibleScene[0].length - 1 ? visibleScene[centerY][centerX + 1] : 'b';
+	const cellBelow = centerY < visibleScene.length - 1 ? visibleScene[centerY + 1][centerX] : 'b';
+	const cellLeft = centerX > 0 ? visibleScene[centerY][centerX - 1] : 'b';
+				
+	// Simple logic: try to move toward finish (f)
+	if (cellRight === 'f') return { cachedData: cachedData, response: 1 };
+	if (cellAbove === 'f') return { cachedData: cachedData, response: 0 };
+	if (cellLeft === 'f') return { cachedData: cachedData, response: 3 };
+				
+	// Try to move right if possible
+	if (cellRight !== 'b' && cellRight !== 'k') {
+		return { cachedData: cachedData, response: 1 };
+	}
+
+	return { cachedData: cachedData, response: -1 }; // no movement
+}       </textarea>
+    </div>
+    <div>
+      <canvas id="canvas1"></canvas>
+      <canvas id="canvas2"></canvas>
+    </div>
+  </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/htmlmixed/htmlmixed.min.js"></script>
+    
+    <script src="vars.js"></script>
+    <!-- <script src="playerScripts.js"></script> -->
+    <script src="script.js" type="module"></script>
+  <script src='codeMirror.js' type='module'></script>
+  </body>
+</html>
