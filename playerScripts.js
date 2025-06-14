@@ -65,7 +65,7 @@ class Player {
         transformedArray.push([]);
         for (let j = 0; j < viewRadius * 2 + 1; j++) {
             let coordinates = [player.position[0] + i, playerPosition[1] + j]; // might be flipped or negated
-            let isInBox = 
+            //let isInBox = 
         }
     }
     
