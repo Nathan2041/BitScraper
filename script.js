@@ -5,21 +5,10 @@ import {
   gridSize,
   viewRadius,
   levels,
-  gravityUp,
-  gravityDown,
-  gravityLeft,
-  gravityRight,
-  air,
-  barrier,
-  finish,
-  ice,
-  kill,
   numberToImage,
   numberToIsTransparent,
   numberToString,
-  stringToNumber,
-  player,
-  unknown
+  stringToNumber
 } from "./vars.js";
 
 /**
@@ -185,28 +174,32 @@ function drawVisibility(
 /**
   * @param viewRadius {number} - radius around player (u)
   * @param visibleScene {string[][]} - the full scene/map
-  * @param player {Player} - player object with position [x, y]
+  * @param playerPosition {number[]} - player position [x, y]
   * @return {string[][]} - view centered around player
   */
-function convertSceneSpaceToPlayerSpace(viewRadius, visibleScene, playerPosition) {
-  let transformedArray = [];
+function convertToPlayerView(viewRadius, visibleScene, playerPosition) {
+  const transformedArray = [];
   const viewSize = viewRadius * 2 + 1;
   
   for (let i = 0; i < viewSize; i++) {
-    transformedArray.push([]);
+    const row = [];
     for (let j = 0; j < viewSize; j++) {
       const worldRow = playerPosition[0] - viewRadius + i;
       const worldCol = playerPosition[1] - viewRadius + j;
       
       if (worldRow >= 0 && worldRow < visibleScene.length && 
           worldCol >= 0 && worldCol < visibleScene[0].length) {
-        transformedArray[i][j] = visibleScene[worldRow][worldCol];
+        row[j] = visibleScene[worldRow][worldCol];
+      } else {
+        row[j] = 'u'; // Fill out-of-bounds with 'u'
       }
     }
+    transformedArray[i] = row;
   }
   
   return transformedArray;
 }
+
 // check if logic is correct
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -215,6 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let data = document.getElementById("data");
   let errors = document.getElementById("errors");
+  let code = document.getElementById('code');
 
   let div1 = document.querySelector(".div1");
   let div2 = document.querySelector(".div2");
@@ -248,7 +242,31 @@ document.addEventListener("DOMContentLoaded", function () {
     gridSize
   );
 
-window.innerWidth < 1070 ? data.innerHTML = `<span class='emoji'>⚠</span>screen too small<span class='emoji'>⚠</span>` : data.innerText = '';
+  let isFirstRun = true;
+  let previousPlayerInput = 'invalid';
+
+  /*
+  document.addEventListener(trigger, () => {
+
+    GameState.scene = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene).scene;
+  
+    drawScene(GameState.scene, ctx, gridSize, stringToNumber, numberToImage);
+    drawVisibility(
+      ctx2,
+      GameState.scene,
+      viewRadius,
+      stringToNumber,
+      numberToIsTransparent,
+      numberToImage,
+      gridSize
+    );
+
+    isFirstRun ? isFirstRun = false : console.log('not first run');
+
+  });
+  */
+
+  window.innerWidth < 1070 ? data.innerHTML = `<span class='emoji'>⚠</span>screen too small<span class='emoji'>⚠</span>` : data.innerText = '';
 
   window.addEventListener("resize", () => {
     button.style.width = `${window.innerWidth / 3 - buttonSpacing * 2}px`;
@@ -259,38 +277,30 @@ window.innerWidth < 1070 ? data.innerHTML = `<span class='emoji'>⚠</span>scree
 
 
 /**
+ * @param isFirstRun {boolean}
  * @param playerPosition {number[]} [i,j]
- * @param previousPlayerPosition {numner[]} [i,j]
+ * @param previousPlayerPosition {number[]} [i,j]
  * @param playerFunction {string}
  * @param scene {string[][]}
- * @return scene {string[][]}
+ * @return response {{scene: string[][], cachedData:any, previousInput:number}}
  */
 function updatePlayer(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {
   let isInAir = false;
   let appliedPlayerFunction = JSON.parse(playerFunction);
   let response = appliedPlayerFunction(visibleScene, cachedData);
 
-  /*
-  let playerPosition = [centerY, centerX];
-
-  const cellAbove = centerY > 0 ? visibleScene[centerY - 1][centerX] : 'b';
-	const cellRight = centerX < visibleScene[0].length - 1 ? visibleScene[centerY][centerX + 1] : 'b';
-	const cellsBelow = [];
-	const cellLeft = centerX > 0 ? visibleScene[centerY][centerX - 1] : 'b';
-
-  const cellTopLeft = (centerY > 0 && centerX > 0) ? visibleScene[centerY - 1][centerX - 1] : 'b';
-  const cellTopRight = (centerY > 0 && centerX < visibleScene[0].length - 1) ? visibleScene[centerY - 1][centerX + 1] : 'b';
-  const cellBottomLeft = (centerY < visibleScene.length - 1 && centerX > 0) ? visibleScene[centerY + 1][centerX - 1] : 'b';
-  const cellBottomRight = (centerY < visibleScene.length - 1 && centerX < visibleScene[0].length - 1) ?  visibleScene[centerY + 1][centerX + 1] : 'b';
-
-  */
-
   return 'incomplete'
 }
 
 class GameState {
   constructor() {
-    this.level = levels[0];
-    //this.playerPosition = 
+    this.level = 0;
+    this.scene = levels[0];
+    this.playerPosition = this.findPlayer();
   }
+
+  findPlayer() {
+    let scene = levels[0];
+  }
+
 }
