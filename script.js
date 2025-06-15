@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
   /*
   document.addEventListener(trigger, () => {
 
-    // GameState.scene = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene).scene;
+    GameState.scene = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene, GameState.gravity).scene;
   
     drawScene(GameState.scene, ctx, gridSize, stringToNumber, numberToImage);
     drawVisibility(
@@ -323,6 +323,18 @@ function updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, p
   return 'incomplete'
 }
 
+function updatePlayerGravity0 () {}
+function updatePlayerGravity1 () {}
+function updatePlayerGravity3 () {}
+
+function updatePlayer(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, cachedData, gravity) {
+  if (gravity == 2) {return updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+  if (gravity == 0) {return updatePlayerGravity0(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+  if (gravity == 1) {return updatePlayerGravity1(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+  if (gravity == 3) {return updatePlayerGravity3(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+  console.log('gravity invalid');
+}
+
 /*
 g↑ -> 0 gravity up
 g→ -> 1 gravity right
@@ -340,6 +352,7 @@ class GameState {
     this.level = 0;
     this.scene = levels[0];
     this.playerPosition = this.findPlayer();
+    this.gravity = 2;
   }
 
   findPlayer() {
