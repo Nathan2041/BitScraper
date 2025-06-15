@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", function () {
   /*
   document.addEventListener(trigger, () => {
 
-    GameState.scene = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene).scene;
+    // GameState.scene = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene).scene;
   
     drawScene(GameState.scene, ctx, gridSize, stringToNumber, numberToImage);
     drawVisibility(
@@ -282,15 +282,58 @@ document.addEventListener("DOMContentLoaded", function () {
  * @param previousPlayerPosition {number[]} [i,j]
  * @param playerFunction {string}
  * @param scene {string[][]}
- * @return response {{scene: string[][], cachedData:any, previousInput:number}}
+ * @return response {{scene: string[][], cachedData:any, previousInput:number, gravity:number}}
  */
-function updatePlayer(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {
-  let isInAir = false;
+function updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {
   let appliedPlayerFunction = JSON.parse(playerFunction);
   let response = appliedPlayerFunction(visibleScene, cachedData);
+  let partialReturn = 'unset';
+
+  let playerI = playerPosition[0];
+  let playerJ = playerPosition[1];
+
+  let cellUpPosition = [playerI - 1, playerJ];
+  let cellDownPosition = [playerI + 1, playerJ];
+  let cellRightPosition = [playerI, playerJ + 1];
+  let cellLeftPosition = [playerI, playerJ - 1];
+  let cellBottomLeftPosition = [playerI + 1, playerJ - 1];
+  let cellBottomRightPosition = [playerI + 1, playerJ + 1];
+  let cellTopLeftPosition = [playerI - 1, playerJ - 1];
+  let cellTopRightPosition = [playerI - 1, playerJ + 1];
+
+  let cellUp = scene[cellUpPosition[0]][cellUpPosition[1]];
+  let cellDown = scene[cellDownPosition[0]][cellDownPosition[1]];
+  let cellRight = scene[cellRightPosition[0]][cellRightPosition[1]];
+  let cellLeft = scene[cellLeftPosition[0]][cellLeftPosition[1]];
+  let cellBottomLeft = scene[cellBottomLeftPosition[0]][cellBottomLeftPosition[1]];
+  let cellBottomRight = scene[cellBottomRightPosition[0]][cellBottomRightPosition[1]];
+  let cellTopLeft = scene[cellTopLeftPosition[0]][cellTopLeftPosition[1]];
+  let cellTopRight = scene[cellTopRightPosition[0]][cellTopRightPosition[1]];
+
+  if (cellBottomLeft !== 'a' && response.response == 3) {
+    scene[cellLeftPosition[0]][cellLeftPosition[1]] = 'p';
+    scene[playerI][playerJ] = 'a';
+    partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity:null};
+  }
+
+  // handle other cases
+
+  // find if you are standing on a gravity block and change gravity accordingly
 
   return 'incomplete'
 }
+
+/*
+g↑ -> 0 gravity up
+g→ -> 1 gravity right
+g↓ -> 2 gravity down
+g← -> 3 gravity left
+
+0 -> up
+1 -> right
+2 -> down
+3 -> left
+*/
 
 class GameState {
   constructor() {
@@ -300,7 +343,13 @@ class GameState {
   }
 
   findPlayer() {
-    let scene = levels[0];
+    let scene = this.scene;
+    for (let i = 0; i < scene.length; i++) {
+      for (let j = 0; j < scene[0].length; j++) {
+        if (scene[i][j] === 'p') { return [i,j] }
+      }
+    }
+    console.log('no player found');
   }
 
 }
