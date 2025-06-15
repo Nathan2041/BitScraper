@@ -248,8 +248,10 @@ document.addEventListener("DOMContentLoaded", function () {
   /*
   document.addEventListener(trigger, () => {
 
-    GameState.scene = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene, GameState.gravity).scene;
+    let newData = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene, GameState.gravity).scene;
   
+    GameState.scene = newData.scene;
+
     drawScene(GameState.scene, ctx, gridSize, stringToNumber, numberToImage);
     drawVisibility(
       ctx2,
@@ -284,10 +286,11 @@ document.addEventListener("DOMContentLoaded", function () {
  * @param scene {string[][]}
  * @return response {{scene: string[][], cachedData:any, previousInput:number, gravity:number}}
  */
-function updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {
+function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {
   let appliedPlayerFunction = JSON.parse(playerFunction);
   let response = appliedPlayerFunction(visibleScene, cachedData);
   let partialReturn = 'unset';
+  let isResponseDone = false;
 
   let playerI = playerPosition[0];
   let playerJ = playerPosition[1];
@@ -298,8 +301,6 @@ function updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, p
   let cellLeftPosition = [playerI, playerJ - 1];
   let cellBottomLeftPosition = [playerI + 1, playerJ - 1];
   let cellBottomRightPosition = [playerI + 1, playerJ + 1];
-  let cellTopLeftPosition = [playerI - 1, playerJ - 1];
-  let cellTopRightPosition = [playerI - 1, playerJ + 1];
 
   let cellUp = scene[cellUpPosition[0]][cellUpPosition[1]];
   let cellDown = scene[cellDownPosition[0]][cellDownPosition[1]];
@@ -307,31 +308,56 @@ function updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, p
   let cellLeft = scene[cellLeftPosition[0]][cellLeftPosition[1]];
   let cellBottomLeft = scene[cellBottomLeftPosition[0]][cellBottomLeftPosition[1]];
   let cellBottomRight = scene[cellBottomRightPosition[0]][cellBottomRightPosition[1]];
-  let cellTopLeft = scene[cellTopLeftPosition[0]][cellTopLeftPosition[1]];
-  let cellTopRight = scene[cellTopRightPosition[0]][cellTopRightPosition[1]];
 
   if (cellBottomLeft !== 'a' && response.response == 3) {
     scene[cellLeftPosition[0]][cellLeftPosition[1]] = 'p';
     scene[playerI][playerJ] = 'a';
-    partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity:null};
+    let gravityNumber = gravityToNumber(cellBottomLeft);
+    gravityNumber == 4 ? gravityNumber = 2 : 1;
+    partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
+    isResponseDone = true;
+  }
+
+  if (cellBottomRight !== 'a' && response.response == 1) {
+    scene[cellRightPosition[0]][cellRightPosition[1]] = 'p';
+    scene[playerI][playerJ] = 'a';
+    let gravityNumber = gravityToNumber(cellBottomRight);
+    gravityNumber == 4 ? gravityNumber = 2 : 1;
+    partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
+    isResponseDone = true;
+  }
+
+  if (cellRight == 'a' && response.response == 1 && isResponseDone == false) {
+    scene[cellRightPosition[0]][cellRightPosition[1]] = 'p';
+    scene[playerI][playerJ] = 'a';
+    let gravityNumber = gravityToNumber(cellBottomRight);
+    gravityNumber == 4 ? gravityNumber = 2 : 1;
+    partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
+    isResponseDone = true;
   }
 
   // handle other cases
 
-  // find if you are standing on a gravity block and change gravity accordingly
-
   return 'incomplete'
 }
 
-function updatePlayerGravity0 () {}
-function updatePlayerGravity1 () {}
-function updatePlayerGravity3 () {}
+function updatePlayerGravity0 (isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {}
+function updatePlayerGravity1 (isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {}
+function updatePlayerGravity3 (isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {}
 
-function updatePlayer(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, cachedData, gravity) {
-  if (gravity == 2) {return updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
-  if (gravity == 0) {return updatePlayerGravity0(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
-  if (gravity == 1) {return updatePlayerGravity1(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
-  if (gravity == 3) {return updatePlayerGravity3(playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+function gravityToNumber(cell) {
+  if (cell == 'g↑') {return 0}
+  if (cell == 'g→') {return 1}
+  if (cell == 'g↓') {return 2}
+  if (cell == 'g←') {return 3}
+  return 4
+}
+
+function updatePlayer(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, cachedData, gravity) {
+  if (gravity == 2) {return updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+  if (gravity == 0) {return updatePlayerGravity0(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+  if (gravity == 1) {return updatePlayerGravity1(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
+  if (gravity == 3) {return updatePlayerGravity3(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
   console.log('gravity invalid');
 }
 
