@@ -244,11 +244,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let isFirstRun = true;
   let previousPlayerInput = 'invalid';
+  let cachedData = null;
 
   /*
   document.addEventListener(trigger, () => {
-
-    let newData = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, GameState.scene, GameState.gravity).scene;
+    //let visibleScene = transformScene(GameState.scene, isVisible)
+    let newData = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, visibleScene,  GameState.scene, cachedData, GameState.gravity).scene;
   
     GameState.scene = newData.scene;
 
@@ -264,6 +265,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
 
     isFirstRun ? isFirstRun = false : console.log('not first run');
+    cachedData = newData.cachedData;
 
   });
   */
@@ -313,7 +315,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     scene[cellLeftPosition[0]][cellLeftPosition[1]] = 'p';
     scene[playerI][playerJ] = 'a';
     let gravityNumber = gravityToNumber(cellBottomLeft);
-    gravityNumber == 4 ? gravityNumber = 2 : 1;
+    gravityNumber = gravityNumber == 4 ? 2 : gravityNumber;
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
   }
@@ -322,7 +324,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     scene[cellRightPosition[0]][cellRightPosition[1]] = 'p';
     scene[playerI][playerJ] = 'a';
     let gravityNumber = gravityToNumber(cellBottomRight);
-    gravityNumber == 4 ? gravityNumber = 2 : 1;
+    gravityNumber = gravityNumber == 4 ? 2 : gravityNumber;
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
   }
@@ -331,7 +333,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     scene[cellRightPosition[0]][cellRightPosition[1]] = 'p';
     scene[playerI][playerJ] = 'a';
     let gravityNumber = gravityToNumber(cellBottomRight);
-    gravityNumber == 4 ? gravityNumber = 2 : 1;
+    gravityNumber = gravityNumber == 4 ? 2 : gravityNumber;
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
   }
@@ -353,7 +355,7 @@ function gravityToNumber(cell) {
   return 4
 }
 
-function updatePlayer(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, cachedData, gravity) {
+function updatePlayer(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData, gravity) {
   if (gravity == 2) {return updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
   if (gravity == 0) {return updatePlayerGravity0(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
   if (gravity == 1) {return updatePlayerGravity1(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData)}
