@@ -14,3 +14,5 @@ add update logic of 'reset' button
 complete findPlayer() function
 
 complete updatePlayer() function
+
+complete event loop
