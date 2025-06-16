@@ -200,6 +200,34 @@ function convertToPlayerView(viewRadius, visibleScene, playerPosition) {
   return transformedArray;
 }
 
+function sceneToVisibleScene(
+  scene,
+  viewRadius,
+  stringToNumber,
+  numberToIsTransparent
+) {
+  let visibleScene = scene;
+  
+  for (let i = 0; i < scene.length; i++) {
+    visibleScene[i] = [];
+    for (let j = 0; j < scene[i].length; j++) {
+      if (
+        !(isVisible(
+          [i, j],
+          scene,
+          stringToNumber,
+          numberToIsTransparent,
+          viewRadius
+        ))
+      ) {
+        visibleScene[i][j] = 'u';
+      }
+    }
+  }
+  
+  return visibleScene;
+}
+
 // check if logic is correct
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -246,10 +274,18 @@ document.addEventListener("DOMContentLoaded", function () {
   let previousPlayerInput = 'invalid';
   let cachedData = null;
 
-  /*
-  document.addEventListener(trigger, () => {
-    //let visibleScene = transformScene(GameState.scene, isVisible)
-    let newData = updatePlayer(isFirstRun, GameState.playerPosition, viewRadius, previousPlayerInput, code.value, visibleScene,  GameState.scene, cachedData, GameState.gravity).scene;
+  document.addEventListener('trigger', () => { // need actual trigger
+    let visibleScene = sceneToVisibleScene(GameState.scene, viewRadius, stringToNumber, numberToIsTransparent);
+    let newData = updatePlayer(
+      isFirstRun,
+      GameState.playerPosition,
+      viewRadius,
+      previousPlayerInput,
+      code.value, visibleScene,
+      GameState.scene,
+      cachedData,
+      GameState.gravity
+    );
   
     GameState.scene = newData.scene;
 
@@ -268,7 +304,6 @@ document.addEventListener("DOMContentLoaded", function () {
     cachedData = newData.cachedData;
 
   });
-  */
 
   window.innerWidth < 1070 ? data.innerHTML = `<span class='emoji'>⚠</span>screen too small<span class='emoji'>⚠</span>` : data.innerText = '';
 
@@ -315,7 +350,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     scene[cellLeftPosition[0]][cellLeftPosition[1]] = 'p';
     scene[playerI][playerJ] = 'a';
     let gravityNumber = gravityToNumber(cellBottomLeft);
-    gravityNumber = gravityNumber == 4 ? 2 : gravityNumber;
+    (gravityNumber = gravityNumber == 4 ? 2 : gravityNumber);
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
   }
@@ -324,7 +359,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     scene[cellRightPosition[0]][cellRightPosition[1]] = 'p';
     scene[playerI][playerJ] = 'a';
     let gravityNumber = gravityToNumber(cellBottomRight);
-    gravityNumber = gravityNumber == 4 ? 2 : gravityNumber;
+    gravityNumber = (gravityNumber == 4 ? 2 : gravityNumber);
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
   }
@@ -333,12 +368,19 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     scene[cellRightPosition[0]][cellRightPosition[1]] = 'p';
     scene[playerI][playerJ] = 'a';
     let gravityNumber = gravityToNumber(cellBottomRight);
-    gravityNumber = gravityNumber == 4 ? 2 : gravityNumber;
+    gravityNumber = (gravityNumber == 4 ? 2 : gravityNumber);
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
   }
 
-  // handle other cases
+  if (cellLeft == 'a' && response.response == 3 && isResponseDone == false) {
+    scene[cellLeftPosition[0]][cellLeftPosition[1]] = 'p';
+    scene[playerI][playerJ] = 'a';
+    let gravityNumber = gravityToNumber(cellBottomLeft);
+    gravityNumber = (gravityNumber == 4 ? 2 : gravityNumber);
+    partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
+    isResponseDone = true;
+  }
 
   return 'incomplete'
 }
