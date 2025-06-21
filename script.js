@@ -331,6 +331,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
   let response = appliedPlayerFunction(visibleScene, cachedData);
   let partialReturn = 'unset';
   let isResponseDone = false;
+  let isInAir = false;
 
   let playerI = playerPosition[0];
   let playerJ = playerPosition[1];
@@ -356,6 +357,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     (gravityNumber = gravityNumber == 4 ? 2 : gravityNumber);
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
+    isInAir = false;
   }
 
   if (cellBottomRight !== 'a' && response.response == 1) {
@@ -365,6 +367,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     gravityNumber = (gravityNumber == 4 ? 2 : gravityNumber);
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
+    isInAir = false;
   }
 
   if (cellRight == 'a' && response.response == 1 && isResponseDone == false) {
@@ -374,6 +377,7 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     gravityNumber = (gravityNumber == 4 ? 2 : gravityNumber);
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
+    isInAir = 'unset';
   }
 
   if (cellLeft == 'a' && response.response == 3 && isResponseDone == false) {
@@ -383,6 +387,28 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     gravityNumber = (gravityNumber == 4 ? 2 : gravityNumber);
     partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: gravityNumber};
     isResponseDone = true;
+    isInAir = 'unset';
+  }
+
+  if (cellUp == 'a' && response.response == 0 && cellDown !== 'a' && isResponseDone == false) {
+    scene[cellUpPosition[0]][cellUpPosition[1]] = 'p';
+    scene[playerI][playerJ] = 'a';
+    partialReturn = {scene: scene, cachedData: response.cachedData, previousPlayerInput: response.response, gravity: 2}
+    isResponseDone = true;
+    let isInAir = 'levitating';
+  }
+
+  if (isResponseDone == false) {
+    console.log('incorrect logic ):');
+    console.log(JSON.stringify(response));
+    console.log(isFirstRun);
+    console.log(JSON.stringify(playerPosition));
+    console.log(viewRadius);
+    console.log(previousPlayerInput);
+    console.log(playerFunction);
+    console.log(JSON.stringify(visibleScene));
+    console.log(JSON.stringify(scene));
+    console.log(JSON.stringify(cachedData));
   }
 
   return 'incomplete'
