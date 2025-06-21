@@ -240,7 +240,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   let div1 = document.querySelector(".div1");
   let div2 = document.querySelector(".div2");
-  let button = document.getElementById("button");
+  let button = document.getElementById("button"); // https://codepen.io/Nathan2041/pen/pvJrYZP?editors=1000
 
   let ctx = canvas.getContext("2d");
   let ctx2 = canvas2.getContext("2d");
@@ -274,25 +274,28 @@ document.addEventListener("DOMContentLoaded", function () {
   let previousPlayerInput = 'invalid';
   let cachedData = null;
 
-  document.addEventListener('trigger', () => { // need actual trigger
-    let visibleScene = sceneToVisibleScene(GameState.scene, viewRadius, stringToNumber, numberToIsTransparent);
+  let gameState = new GameState();
+
+  button.addEventListener('mouseup', () => {
+    console.log('test');
+    let visibleScene = convertToPlayerView(viewRadius, sceneToVisibleScene(gameState.scene, viewRadius, stringToNumber, numberToIsTransparent), GameState.playerPosition);
     let newData = updatePlayer(
       isFirstRun,
-      GameState.playerPosition,
+      gameState.playerPosition,
       viewRadius,
       previousPlayerInput,
       code.value, visibleScene,
-      GameState.scene,
+      gameState.scene,
       cachedData,
-      GameState.gravity
+      gameState.gravity
     );
   
-    GameState.scene = newData.scene;
+    gameState.scene = newData.scene;
 
-    drawScene(GameState.scene, ctx, gridSize, stringToNumber, numberToImage);
+    drawScene(gameState.scene, ctx, gridSize, stringToNumber, numberToImage);
     drawVisibility(
       ctx2,
-      GameState.scene,
+      gameStateameState.scene,
       viewRadius,
       stringToNumber,
       numberToIsTransparent,
@@ -429,7 +432,7 @@ class GameState {
     let scene = this.scene;
     for (let i = 0; i < scene.length; i++) {
       for (let j = 0; j < scene[0].length; j++) {
-        if (scene[i][j] === 'p') { return [i,j] }
+        if (scene[i][j] === 'p') { this.playerPosition = [i,j] }
       }
     }
     console.log('no player found');
