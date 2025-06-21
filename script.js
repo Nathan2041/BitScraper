@@ -305,7 +305,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     isFirstRun ? isFirstRun = false : console.log('not first run');
     cachedData = newData.cachedData;
-
+    console.log('test2');
   });
 
   window.innerWidth < 1070 ? data.innerHTML = `<span class='emoji'>⚠</span>screen too small<span class='emoji'>⚠</span>` : data.innerText = '';
