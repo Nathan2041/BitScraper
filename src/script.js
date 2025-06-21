@@ -278,7 +278,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   button.addEventListener('mouseup', () => {
     console.log('test');
-    let visibleScene = convertToPlayerView(viewRadius, sceneToVisibleScene(gameState.scene, viewRadius, stringToNumber, numberToIsTransparent), GameState.playerPosition);
+    let visibleScene = convertToPlayerView(viewRadius, sceneToVisibleScene(gameState.scene, viewRadius, stringToNumber, numberToIsTransparent), gameState.playerPosition);
     let newData = updatePlayer(
       isFirstRun,
       gameState.playerPosition,
@@ -291,6 +291,7 @@ document.addEventListener("DOMContentLoaded", function () {
     );
   
     gameState.scene = newData.scene;
+    gameState.playerPosition = gameState.findPlayer();
 
     drawScene(gameState.scene, ctx, gridSize, stringToNumber, numberToImage);
     drawVisibility(
@@ -458,10 +459,10 @@ class GameState {
     let scene = this.scene;
     for (let i = 0; i < scene.length; i++) {
       for (let j = 0; j < scene[0].length; j++) {
-        if (scene[i][j] === 'p') { this.playerPosition = [i,j] }
+        if (scene[i][j] === 'p') { return [i,j] }
       }
     }
-    console.log('no player found');
+    console.log('no player ):');
   }
 
 }
