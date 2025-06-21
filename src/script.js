@@ -206,19 +206,21 @@ function sceneToVisibleScene(
   stringToNumber,
   numberToIsTransparent
 ) {
-  let visibleScene = scene;
+  let visibleScene = [];
+  for (let i = 0; i < scene.length; i++) {
+    visibleScene[i] = [...scene[i]];
+  }
   
   for (let i = 0; i < scene.length; i++) {
-    visibleScene[i] = [];
     for (let j = 0; j < scene[i].length; j++) {
       if (
-        !(isVisible(
+        !isVisible(
           [i, j],
           scene,
           stringToNumber,
           numberToIsTransparent,
           viewRadius
-        ))
+        )
       ) {
         visibleScene[i][j] = 'u';
       }
@@ -228,7 +230,15 @@ function sceneToVisibleScene(
   return visibleScene;
 }
 
-// check if logic is correct
+function parsePlayerFunction(playerFunctionString) {
+    try {
+        // Wrap the function string and evaluate it
+        return eval(`(${playerFunctionString})`);
+    } catch (error) {
+        console.error('Error parsing player function:', error);
+        return null;
+    }
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   let canvas = document.getElementById("canvas1");
@@ -296,7 +306,7 @@ document.addEventListener("DOMContentLoaded", function () {
     drawScene(gameState.scene, ctx, gridSize, stringToNumber, numberToImage);
     drawVisibility(
       ctx2,
-      gameStateameState.scene,
+      gameState.scene,
       viewRadius,
       stringToNumber,
       numberToIsTransparent,
@@ -328,7 +338,7 @@ document.addEventListener("DOMContentLoaded", function () {
  * @return response {{scene: string[][], cachedData:any, previousInput:number, gravity:number}}
  */
 function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {
-  let appliedPlayerFunction = JSON.parse(playerFunction);
+  let appliedPlayerFunction = parsePlayerFunction(playerFunction);
   let response = appliedPlayerFunction(visibleScene, cachedData);
   let partialReturn = 'unset';
   let isResponseDone = false;
@@ -411,6 +421,14 @@ function updatePlayerGravity2(isFirstRun, playerPosition, viewRadius, previousPl
     console.log(JSON.stringify(scene));
     console.log(JSON.stringify(cachedData));
   }
+
+  return partialReturn
+
+  /*
+  if (partialReturn.gravity == 0 && cellUp == 'a') {
+    
+  }
+  */
 
   return 'incomplete'
 }
