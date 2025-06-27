@@ -1,12 +1,4 @@
 # BitScraper
 Created with CodeSandbox
 
-TODO:
-
-add css to 'enter code' button
-
-add 'reset' button
-
-add update logic of 'reset' button
-
-complete updatePlayer() function
+BitScraper is a JavaScript coding game inspired by replicube. It is planned to have more levels soon
