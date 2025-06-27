@@ -12,8 +12,8 @@
     "css",
     "js"
   ],
-  "author": "Ives van Hoorne",
-  "license": "MIT",
+  "author": "Nathan Henry Dianis",
+  "license": "Apache 2.0",
   "devDependencies": {
     "serve": "11.2.0"
   }
