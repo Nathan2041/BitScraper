@@ -191,7 +191,7 @@ function convertToPlayerView(viewRadius, visibleScene, playerPosition) {
           worldCol >= 0 && worldCol < visibleScene[0].length) {
         row[j] = visibleScene[worldRow][worldCol];
       } else {
-        row[j] = 'u'; // Fill out-of-bounds with 'u'
+        row[j] = 'u';
       }
     }
     transformedArray[i] = row;
@@ -232,7 +232,6 @@ function sceneToVisibleScene(
 
 function parsePlayerFunction(playerFunctionString) {
     try {
-        // Wrap the function string and evaluate it
         return eval(`(${playerFunctionString})`);
     } catch (error) {
         console.error('Error parsing player function:', error);
@@ -417,18 +416,18 @@ function updatePlayerGravity2(playerPosition, viewRadius, previousPlayerInput, p
     // move the player
   }
 
-  // gravity shit
-  let gravity = 2;
+  originalScene = gameState.scene;
+  gameState.scene = scene;
+  let [playerI3, playerJ3] = gameState.findPlayer();
+  gameState.scene = originalScene;
 
-  partialReturn = partialReturn ? partialReturn : { scene: scene, cachedData: response.chachedData, previousPlayerInput: response.response, gravity: gravity };
+  let gravityNumber = gravityToNumber(scene[playerI3 + 1][playerJ3]);
+  gravityNumber = (gravityNumber == 4 ? 2 : gravityNumber);
+
+  partialReturn = partialReturn ? partialReturn : { scene: scene, cachedData: response.chachedData, previousPlayerInput: response.response, gravity: gravityNumber };
 
   return partialReturn
 }
-
-/*
-let gravityNumber = gravityToNumber(cellBottomLeft);
-(gravityNumber = gravityNumber == 4 ? 2 : gravityNumber);
-*/
 
 function updatePlayerGravity0 (isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {}
 function updatePlayerGravity1 (isFirstRun, playerPosition, viewRadius, previousPlayerInput, playerFunction, visibleScene, scene, cachedData) {}
